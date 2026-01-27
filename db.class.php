@@ -605,6 +605,14 @@ class MeekroDB {
         $str = '%' . str_replace(array('%', '_'), array('\%', '\_'), $arg) . '%';
         return new MeekroDBParsedQuery('?', array($str));
       },
+      'ssb' => function($arg) use ($t) { 
+        $str = str_replace(array('%', '_'), array('\%', '\_'), $arg) . '%';
+        return new MeekroDBParsedQuery('?', array($str));
+      },
+      'sse' => function($arg) use ($t) { 
+        $str = '%' . str_replace(array('%', '_'), array('\%', '\_'), $arg);
+        return new MeekroDBParsedQuery('?', array($str));
+      },
       'ls' => function($arg) use ($t, $placeholders) {
         $arg = array_map('strval', $arg);
         return new MeekroDBParsedQuery($placeholders(count($arg)), $arg);
