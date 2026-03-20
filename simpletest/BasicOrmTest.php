@@ -490,4 +490,18 @@ class BasicOrmTest extends SimpleTest {
     DB::$nested_transactions = true;
   }
 
+  // * isset() returns true for set ORM fields, false for null ones
+  // * unset() clears a field so getter returns null
+  function test_14_isset_unset() {
+    $Person = Person::Search(['name' => 'Nick']);
+    $this->assert(isset($Person->name));
+    $this->assert(isset($Person->favorite_color));
+
+    $Person->favorite_color = null;
+    $this->assert(!isset($Person->favorite_color));
+
+    unset($Person->age);
+    $this->assert($Person->age === null);
+  }
+
 }

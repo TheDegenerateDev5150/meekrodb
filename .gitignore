@@ -3,3 +3,4 @@ simpletest/test_setup.php
 .phpdoc
 /vendor/
 /composer.lock
+CLAUDE.md

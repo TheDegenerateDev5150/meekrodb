@@ -146,6 +146,22 @@ abstract class MeekroORM {
     return $this->$key;
   }
 
+  public function __isset($key) {
+    if (static::is_assoc($key)) {
+      return true;
+    }
+    if ($this->has($key)) {
+      return isset($this->_orm_row[$key]);
+    }
+    return false;
+  }
+
+  public function __unset($key) {
+    if ($this->has($key)) {
+      unset($this->_orm_row[$key]);
+    }
+  }
+
   public function has($key) {
     return !! static::_orm_coltype($key);
   }
