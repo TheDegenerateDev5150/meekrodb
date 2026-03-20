@@ -131,3 +131,11 @@ CREATE TABLE "fake%s:s_`""table" (
   "id" SERIAL PRIMARY KEY,
   "my.data" VARCHAR( 1024 ) NULL DEFAULT ''
 )
+
+-- name: create_bool_test ; db: pgsql
+CREATE TABLE bool_test (
+  id SERIAL PRIMARY KEY,
+  label VARCHAR(255) NOT NULL DEFAULT '',
+  flag BOOLEAN NOT NULL,
+  nullable_flag BOOLEAN NULL
+)

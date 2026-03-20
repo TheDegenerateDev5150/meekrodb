@@ -748,6 +748,9 @@ class MeekroORMTable {
       'datetime' => 'datetime',
       'timestamp' => 'datetime',
 
+      // pgsql
+      'boolean' => 'bool',
+
       // sqlite, pgsql
       'integer' => 'int',
     ];
