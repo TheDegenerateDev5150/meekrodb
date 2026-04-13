@@ -1370,11 +1370,30 @@ class DBTransaction {
 class MeekroDBException extends Exception {
   protected $query = '';
   protected $params = array();
+  protected $strCode = ''; // PDOException supplies both an int code and a str code, and they're different
 
   static function fromException(Exception $e) {
-    return new self($e->getMessage(), 0, $e);
+    $code = 0;
+    $strCode = '';
+
+    if (is_int($e->getCode())) {
+      $code = $e->getCode();
+    }
+    else if (isset($e->errorInfo) && is_array($e->errorInfo)) {
+      if (is_string($e->errorInfo[0])) {
+        $strCode = $e->errorInfo[0];
+      }
+      if (is_int($e->errorInfo[1])) {
+        $code = $e->errorInfo[1];
+      }
+    }
+
+    $Exception = new self($e->getMessage(), $code, $e);
+    $Exception->strCode = $strCode;
+    return $Exception;
   }
 
+  public function getStrCode() { return $this->strCode; }
   public function getQuery() { return $this->query; }
   public function getParams() { return $this->params; }
   public function setQuery($query, array $params) {

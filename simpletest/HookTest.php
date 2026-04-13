@@ -93,6 +93,12 @@ class HookTest extends SimpleTest {
     
     $error_handler = function($hash) {
       global $anonymous_error_callback_worked;
+      
+      if ($this->db_type == 'mysql') {
+        $this->assert($hash['exception']->getStrCode() === '42000');
+        $this->assert($hash['exception']->getCode() === 1064);
+      }
+      
       if (substr_count($hash['error'], 'syntax')) {
         $anonymous_error_callback_worked = 1;
       }
