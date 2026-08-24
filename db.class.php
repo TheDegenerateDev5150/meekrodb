@@ -28,11 +28,12 @@ if (! extension_loaded('pdo')) {
  * @method static mixed queryFirstField(string $query, ...$parameters)
  * @method static mixed queryFirstList(string $query, ...$parameters)
  * @method static mixed queryFirstColumn(string $query, ...$parameters)
+ * @method static mixed queryAllLists(string $query, ...$parameters)
  * @method static mixed queryFullColumns(string $query, ...$parameters)
  * @method static mixed queryWalk(string $query, ...$parameters)
- * 
+ *
  * @link https://meekro.com/docs/altering-data.html Altering Data
- * 
+ *
  * @method static int insert(string $table_name, array $data, ...$parameters)
  * @method static mixed insertId()
  * @method static int insertIgnore(string $table_name, array $data, ...$parameters)
@@ -41,6 +42,7 @@ if (! extension_loaded('pdo')) {
  * @method static int update(string $table_name, array $data, ...$parameters)
  * @method static int delete(string $table_name, ...$parameters)
  * @method static int affectedRows()
+ * @method static mixed sqleval(string $query, ...$parameters)
  * 
  * @link https://meekro.com/docs/transactions.html Transactions
  * 
@@ -58,11 +60,14 @@ if (! extension_loaded('pdo')) {
  * @link https://meekro.com/docs/misc-methods.html Misc Methods and Variables
  * 
  * @method static void useDB(string $database_name)
+ * @method static void setDB(string $database_name)
  * @method static array tableList(?string $database_name = null)
  * @method static array columnList(string $table_name)
  * @method static void disconnect()
  * @method static PDO get()
  * @method static string lastQuery()
+ * @method static string serverVersion()
+ * @method static void debugMode(bool $enable = true)
  * @method static mixed parse(string $query, ...$parameters)
  */
 class DB {
@@ -112,9 +117,6 @@ class DB {
     return call_user_func_array($fn, $args);
   }
 
-  /**
-   * @deprecated
-   */
   static function debugMode($enable=true) {
     if ($enable) self::$logfile = fopen('php://output', 'w');
     else self::$logfile = null;
@@ -227,7 +229,12 @@ class MeekroDB {
   public function affectedRows() { return $this->affected_rows; }
   
   public function lastQuery() { return $this->last_query; }
-  
+
+  public function debugMode($enable=true) {
+    if ($enable) $this->logfile = fopen('php://output', 'w');
+    else $this->logfile = null;
+  }
+
   public function setDB() { return $this->useDB(...func_get_args()); }
   public function useDB($dbName) { 
     if (in_array($this->dbType(), array('pgsql', 'sqlite'))) {
@@ -1227,15 +1234,7 @@ class MeekroDB {
   /**
    * @deprecated
    */
-  public function debugMode($enable=true) {
-    if ($enable) $this->logfile = fopen('php://output', 'w');
-    else $this->logfile = null;
-  }
-
-  /**
-   * @deprecated
-   */
-  public function queryRaw() { 
+  public function queryRaw() {
     return $this->queryHelper(array('raw' => true, 'name' => 'queryRaw'), func_get_args());
   }
 
